@@ -9,3 +9,4 @@ repo_with_gitignore.txt
 repo_without_gitignore.txt
 
 REPORT_GITIGNORE_OPTIMIZATION.md
+.DS_Store
