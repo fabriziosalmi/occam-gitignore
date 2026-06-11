@@ -73,6 +73,15 @@ class GenerateOptions:
     include_comments: bool = True
     include_provenance: bool = False
 
+    def __post_init__(self) -> None:
+        # Ensure each extra is a non‑empty string; this mirrors the validation
+        # performed for Feature names without imposing the same character set.
+        for extra in self.extras:
+            if not isinstance(extra, str):
+                raise TypeError(f"extras must contain strings, got {type(extra)!r}")
+            if not extra:
+                raise ValueError("extras entries must be non‑empty strings")
+
 
 @dataclass(frozen=True, slots=True)
 class GitignoreOutput:
