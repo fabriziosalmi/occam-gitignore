@@ -94,6 +94,14 @@ _DETECTORS: Final[tuple[Detector, ...]] = (
         Feature("swift"),
         lambda p: _is_or_endswith("Package.swift")(p) or _ext(".swift")(p),
     ),
+    # Machine learning. Detected conservatively from the presence of model
+    # weight files. Deps-based detection (torch/transformers/onnxruntime in
+    # requirements/pyproject) is intentionally NOT done here: the fingerprint
+    # is a pure function of the path list and never reads file contents.
+    Detector(
+        Feature("ml"),
+        _ext(".pt", ".onnx", ".gguf", ".safetensors"),
+    ),
 )
 
 

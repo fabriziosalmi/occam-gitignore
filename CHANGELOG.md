@@ -4,6 +4,46 @@ All notable changes to `occam-gitignore` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] — 2026-07-19
+
+### Security
+- **`.env` and secret patterns are now emitted for every ecosystem**, not just
+  Python. Previously the `.env` rule was attached to the Python feature (via the
+  mined rules table), so a Rust/Go/Node repository with no Python generated a
+  `.gitignore` with **no `.env` line** — applying it could silently commit
+  secrets. `.env`, `.env.*` and `!.env.example` now live in the `common`
+  template, which is part of every non-empty fingerprint.
+- Added common secret patterns to the `common` template: `*.pem`, `*.key`,
+  `*.p12`, `*.pfx`, `*.keystore`, `id_rsa`, `id_ed25519`. Public keys such as
+  `id_rsa.pub` remain trackable.
+
+### Added
+- `ml` ecosystem, detected conservatively from the presence of model weight
+  files (`*.pt`, `*.onnx`, `*.gguf`, `*.safetensors`). Ignores model artifacts
+  and caches: `*.onnx`, `*.pt`, `*.pth`, `*.gguf`, `*.safetensors`, `*.ckpt`,
+  `.fastembed_cache/`. Detection is a pure function of the path list and never
+  reads file contents, so dependency-based signals (e.g. `torch` in
+  `requirements.txt`) are intentionally out of scope.
+- Python template: `.Python` and `.dmypy.json`.
+
+### Fixed
+- Negation patterns (`!…`) are now rendered **after** the positive patterns in
+  their section, so git's "last matching pattern wins" makes them effective.
+  Alphabetical sorting previously placed `!` (0x21) before `.`/`*`, silently
+  neutering every negation (e.g. `!gradle/wrapper/gradle-wrapper.jar` was
+  overridden by `*.jar`). This also makes the new `!.env.example` re-include work.
+
+### Changed
+- The shipped `data/rules_table.json` is now empty. Its only non-redundant entry
+  was the Python `.env` rule (now in `common`); every other pattern was already
+  provided by the `common` template and deduplicated away. The training/mining
+  pipeline and the rules-table mechanism are unchanged.
+- Because the rules table, templates and core version all changed, every
+  output's provenance line and content hash change. This is expected and
+  deterministic: the 5 snapshots and the 34-case conformance suite were
+  regenerated, and generating the same repository twice is still byte-identical.
+- Bumped `occam-gitignore` and `occam-gitignore-core` from 0.1.3 to 0.2.0.
+
 ## [0.1.3] — 2026-04-27
 
 ### Fixed
@@ -43,6 +83,7 @@ All notable changes to `occam-gitignore` are documented here. The format follows
 - Composite GitHub Action (`uses: fabriziosalmi/gitignore@v0.1.x`) for
   drift check / auto-fix in CI.
 
+[0.2.0]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.2.0
 [0.1.3]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.1.3
 [0.1.2]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.1.2
 [0.1.0]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.1.0

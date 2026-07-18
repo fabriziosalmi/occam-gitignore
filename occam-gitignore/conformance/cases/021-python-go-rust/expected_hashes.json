@@ -1,13 +1,13 @@
 {
-  "content_hash": "sha256:7a30d85b8cfeb65159a60a856f984709480f0a21d61f4c2ee3b9cd1619fd51bb",
-  "core_version": "0.1.3",
+  "content_hash": "sha256:c55ddca1359dba92854370e35c8ec8f8a05d017acf2b29f9515e2521a3321a7d",
+  "core_version": "0.2.0",
   "features": [
     "common",
     "go",
     "python",
     "rust"
   ],
-  "provenance_hash": "sha256:e401e0aec0b6cbcd16a6bcfb22dca2706bae74fc3587178ff047b0a21d6a2a83",
-  "rules_table_version": "sha256:72fd0c323cc1",
-  "templates_version": "sha256:2b4ad54ce9b4"
+  "provenance_hash": "sha256:a5daccdbc4abd67de7bd3dbd6ea97d6039afb3238829912657a550742a43ca45",
+  "rules_table_version": "sha256:4f53cda18c2b",
+  "templates_version": "sha256:fac86df08594"
 }

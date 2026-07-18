@@ -157,7 +157,13 @@ EDGES: tuple[Case, ...] = (
     ),
 )
 
-ALL_CASES: tuple[Case, ...] = SINGLE + COMBOS + OPTION_VARIANTS + EDGES
+# Machine learning: conservative file-presence detection of the `ml` feature.
+ML: tuple[Case, ...] = (
+    Case("ml-onnx", ("model.onnx",)),
+    Case("python-ml", ("pyproject.toml", "train.py", "checkpoints/model.pt")),
+)
+
+ALL_CASES: tuple[Case, ...] = SINGLE + COMBOS + OPTION_VARIANTS + EDGES + ML
 
 
 def _copy_fixtures() -> None:

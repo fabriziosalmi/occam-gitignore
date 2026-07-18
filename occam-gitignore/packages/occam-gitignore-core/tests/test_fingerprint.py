@@ -48,8 +48,18 @@ def test_uppercase_feature_name_rejected() -> None:
         (("Gemfile", "app/x.rb"), "ruby"),
         (("App.csproj", "Program.cs"), "csharp"),
         (("Package.swift", "Sources/main.swift"), "swift"),
+        (("model.onnx",), "ml"),
+        (("checkpoints/model.pt",), "ml"),
+        (("weights.safetensors",), "ml"),
+        (("llama.gguf",), "ml"),
     ],
 )
 def test_new_detectors(tree: tuple[str, ...], expected: str) -> None:
     fp = DefaultFingerprinter().fingerprint(tree)
     assert Feature(expected) in fp.features
+
+
+def test_ml_detection_is_conservative() -> None:
+    """A plain Python repo (no model weights) must NOT be flagged as ml."""
+    fp = DefaultFingerprinter().fingerprint(("pyproject.toml", "src/main.py"))
+    assert Feature("ml") not in fp.features

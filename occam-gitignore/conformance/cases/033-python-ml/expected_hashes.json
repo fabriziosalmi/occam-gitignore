@@ -1,0 +1,12 @@
+{
+  "content_hash": "sha256:3cd98b3c935faa94e3031cbb67031ba46abb409a08644a7165e3bd31c2ec656f",
+  "core_version": "0.2.0",
+  "features": [
+    "common",
+    "ml",
+    "python"
+  ],
+  "provenance_hash": "sha256:a0b54d9089518d39fec9b92daae0c5f41d9a6941dfc4d2d6431a822cc29a2930",
+  "rules_table_version": "sha256:4f53cda18c2b",
+  "templates_version": "sha256:fac86df08594"
+}

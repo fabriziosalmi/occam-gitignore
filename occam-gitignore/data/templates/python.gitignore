@@ -14,6 +14,7 @@ dist/
 .eggs/
 
 # Virtual environments
+.Python
 .venv/
 venv/
 env/
@@ -29,6 +30,7 @@ htmlcov/
 .nox/
 
 # Type checkers / linters
+.dmypy.json
 .mypy_cache/
 .ruff_cache/
 .pyre/

@@ -1,0 +1,10 @@
+# Machine learning model artifacts and caches.
+# Detected conservatively (presence of model weight files); see the `ml`
+# detector in the fingerprinter.
+*.onnx
+*.pt
+*.pth
+*.gguf
+*.safetensors
+*.ckpt
+.fastembed_cache/

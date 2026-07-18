@@ -6,3 +6,17 @@ Thumbs.db
 *.swp
 *.tmp
 *~
+
+# Environment files & secrets.
+# Every ecosystem can carry these, so they live in `common` (not tied to any
+# language). This keeps credentials out of git regardless of the detected stack.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+id_rsa
+id_ed25519

@@ -2,7 +2,12 @@
 *.bak
 *.egg
 *.egg-info/
+*.key
+*.keystore
 *.log
+*.p12
+*.pem
+*.pfx
 *.pid
 *.py[cod]
 *.so
@@ -11,11 +16,15 @@
 *.tsbuildinfo
 *~
 .DS_Store
+.Python
 .cache/
 .coverage
 .coverage.*
+.dmypy.json
 .dockerignore.local
 .eggs/
+.env
+.env.*
 .eslintcache
 .idea/
 .mypy_cache/
@@ -41,6 +50,8 @@ coverage.xml
 dist/
 env/
 htmlcov/
+id_ed25519
+id_rsa
 jspm_packages/
 logs/
 node_modules/
@@ -50,4 +61,4 @@ pnpm-debug.log*
 venv/
 yarn-debug.log*
 yarn-error.log*
-.env
+!.env.example

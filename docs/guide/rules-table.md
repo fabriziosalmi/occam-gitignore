@@ -8,14 +8,17 @@ real projects emit consistently.
 
 ```json
 {
-  "version": "sha256:72fd0c323cc1",
+  "version": "sha256:<content-addressed>",
   "rules": [
-    { "features": ["python"], "patterns": [".env"] },
-    { "features": ["node"],   "patterns": [".env.local"] },
     { "features": ["python", "docker"], "patterns": [".dockerignore.local"] }
   ]
 }
 ```
+
+> Secrets are **not** ecosystem-scoped. `.env`, `.env.*` and patterns like
+> `*.pem` / `id_rsa` live in the `common` template so they apply to every stack,
+> not just the one that happened to mine them. The rules table is for genuine
+> co-occurrence rules that the static templates miss.
 
 - `version` is `sha256(canonical_json(rules))[:12]`, prefixed with `sha256:`.
   Edit the rules and the version changes deterministically.

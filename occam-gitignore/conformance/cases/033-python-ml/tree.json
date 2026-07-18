@@ -1,0 +1,5 @@
+[
+  "pyproject.toml",
+  "train.py",
+  "checkpoints/model.pt"
+]
