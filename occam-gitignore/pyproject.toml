@@ -38,5 +38,13 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["packages"]
 addopts = "-q --strict-markers --strict-config"
-filterwarnings = ["error"]
+filterwarnings = [
+  "error",
+  # starlette>=1.3 deprecates using `httpx` with its TestClient in favour of
+  # `httpx2`; fastapi.testclient re-exports it, so the warning fires at import
+  # time in the api tests. It is informational (functionality is intact) — scope
+  # an ignore so the `error` policy does not fail collection. Remove once the
+  # test stack adopts httpx2. (security dep bump, 2026-07)
+  "ignore::starlette.exceptions.StarletteDeprecationWarning",
+]
 xfail_strict = true
