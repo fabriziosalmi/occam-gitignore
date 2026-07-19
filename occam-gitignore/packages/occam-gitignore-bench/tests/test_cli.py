@@ -49,6 +49,35 @@ def test_run_subcommand_returns_zero(tmp_path: Path) -> None:
     assert rc == 0
 
 
+def test_run_min_precision_gate_fails_when_below(tmp_path: Path) -> None:
+    """A recall-only gate would pass this; the precision gate must catch it."""
+    corpus, templates, rules = _write_fixtures(tmp_path)
+    # Expected omits `*.pyc`, so the generator over-produces -> precision 0.5.
+    (corpus / "py.json").write_text(
+        json.dumps(
+            {"name": "py", "tree": ["pyproject.toml"], "expected": ["__pycache__/"]},
+        ),
+        "utf-8",
+    )
+    rc = main(
+        [
+            "run",
+            str(corpus),
+            "--templates",
+            str(templates),
+            "--rules-table",
+            str(rules),
+            "--repeats",
+            "2",
+            "--min-recall",
+            "0.5",  # would pass alone
+            "--min-precision",
+            "0.99",  # must fail
+        ],
+    )
+    assert rc == 5
+
+
 def test_perf_subcommand_meets_default_budget(tmp_path: Path) -> None:
     """Smoke test only — uses generous budgets so it passes on slow CI runners.
 

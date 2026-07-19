@@ -42,6 +42,13 @@ def main(argv: list[str] | None = None) -> int:
         "--min-recall", type=float, default=None, help="Fail if macro recall is below.",
     )
     run.add_argument(
+        "--min-precision",
+        type=float,
+        default=None,
+        help="Fail if macro precision is below. Guards against silent over-generation "
+        "(the metric a recall-only gate would let rot).",
+    )
+    run.add_argument(
         "--min-f1", type=float, default=None, help="Fail if macro F1 is below.",
     )
     run.add_argument(
@@ -96,6 +103,8 @@ def _exit_code(summary: ReportSummary, args: argparse.Namespace) -> int:
         return 1
     if args.min_recall is not None and summary.macro_recall < args.min_recall:
         return 2
+    if args.min_precision is not None and summary.macro_precision < args.min_precision:
+        return 5
     if args.min_f1 is not None and summary.macro_f1 < args.min_f1:
         return 3
     if args.max_p99_ms is not None and summary.latency_p99_ms > args.max_p99_ms:

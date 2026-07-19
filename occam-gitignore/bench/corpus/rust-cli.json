@@ -1,13 +1,32 @@
 {
   "name": "rust-cli",
-  "tree": ["Cargo.toml", "src/main.rs", "src/lib.rs"],
+  "tree": [
+    "Cargo.toml",
+    "src/main.rs",
+    "src/lib.rs"
+  ],
   "expected": [
-    "target/",
+    "!.env.example",
     "**/*.rs.bk",
-    "Cargo.lock",
+    "*.bak",
+    "*.key",
+    "*.keystore",
+    "*.p12",
+    "*.pdb",
+    "*.pem",
+    "*.pfx",
+    "*.swp",
+    "*.tmp",
+    "*~",
     ".DS_Store",
+    ".env",
+    ".env.*",
     ".idea/",
     ".vscode/",
-    "Thumbs.db"
+    "Cargo.lock",
+    "Thumbs.db",
+    "id_ed25519",
+    "id_rsa",
+    "target/"
   ]
 }

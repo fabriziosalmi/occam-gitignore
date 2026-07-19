@@ -7,6 +7,7 @@ No I/O, no time, no randomness. All public types are immutable.
 from .errors import (
     DeterminismError,
     FingerprintError,
+    ManagedBlockError,
     OccamGitignoreError,
     RulesTableError,
     TemplateNotFoundError,
@@ -14,6 +15,11 @@ from .errors import (
 from .fingerprint import DefaultFingerprinter, Detector
 from .generate import generate
 from .ports import Fingerprinter, RulesTable, TemplateRepository
+from .reconcile import (
+    apply_managed_block,
+    build_managed_block,
+    missing_patterns,
+)
 from .rules_table import JsonRulesTable
 from .schema import (
     Feature,
@@ -40,6 +46,7 @@ __all__ = [
     "GitignoreOutput",
     "InMemoryTemplateRepository",
     "JsonRulesTable",
+    "ManagedBlockError",
     "OccamGitignoreError",
     "Rule",
     "RuleSource",
@@ -47,5 +54,8 @@ __all__ = [
     "RulesTableError",
     "TemplateNotFoundError",
     "TemplateRepository",
+    "apply_managed_block",
+    "build_managed_block",
     "generate",
+    "missing_patterns",
 ]

@@ -22,3 +22,11 @@ class RulesTableError(OccamGitignoreError):
 
 class DeterminismError(OccamGitignoreError):
     """Raised when a determinism invariant is violated at runtime."""
+
+
+class ManagedBlockError(OccamGitignoreError):
+    """Raised when an existing `.gitignore` has malformed managed-block markers.
+
+    For example a start marker without a matching end marker, or an end marker
+    that precedes its start. The file is left untouched so a human can fix it.
+    """

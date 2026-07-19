@@ -80,6 +80,38 @@ occam-gitignore diff .
 If the output is empty, your `.gitignore` is up to date. If not, you can review the proposed
 changes and apply them.
 
+### Guard against drift (`check`)
+
+`check` is a **coverage guard**: it succeeds when every canonical pattern is present and fails
+(exit code 1), listing the missing lines, when one is not. Extra project-specific lines are
+allowed — great for CI and pre-commit hooks.
+
+```bash
+occam-gitignore check .
+# exit 0: nothing missing
+# exit 1: prints the canonical patterns your .gitignore is missing (e.g. .env)
+```
+
+### Merge without clobbering (`apply`)
+
+`apply` writes the canonical rules into a single delimited **managed block** and leaves every
+line outside it untouched. It is idempotent and deterministic, so it is safe to re-run and to
+commit:
+
+```bash
+occam-gitignore apply .
+```
+
+```gitignore
+# your hand-written rules stay here, untouched
+/local-secrets/
+
+# >>> occam-gitignore >>>
+# managed by occam-gitignore — do not edit inside this block
+# ...canonical, deterministic output...
+# <<< occam-gitignore <<<
+```
+
 ---
 
 ## Use it in CI (GitHub Action)
@@ -95,25 +127,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: fabriziosalmi/gitignore@v0.1.3
+      - uses: fabriziosalmi/occam-gitignore@v0.3.0
         with:
           path: '.'
-          mode: 'check'   # fail the build if .gitignore is out of sync
+          mode: 'check'   # fail the build if a canonical pattern is missing
 ```
 
-To **auto-fix** instead of failing, use `mode: 'fix'` and commit the result with one of the
-common "auto-commit" actions.
+The check is a **coverage guard**: it fails only when your `.gitignore` is *missing* a
+canonical pattern (e.g. `.env` slipped out). Extra, project-specific lines you added by hand
+are always allowed. To **auto-fix**, use `mode: 'fix'` — it merges the canonical rules into a
+delimited managed block and leaves your custom lines untouched — then commit the result with
+one of the common "auto-commit" actions.
 
 | Input            | Default          | Description                                  |
 | ---------------- | ---------------- | -------------------------------------------- |
 | `path`           | `.`              | Repo path to scan.                           |
-| `mode`           | `check`          | `check` fails on drift; `fix` rewrites file. |
+| `mode`           | `check`          | `check` fails on missing canonical patterns; `fix` merges the managed block. |
 | `python-version` | `3.12`           | Python used to install the CLI.              |
-| `version`        | `>=0.1.3,<0.2`   | PEP 440 spec for the CLI package.            |
+| `version`        | `>=0.3.0,<0.4`   | PEP 440 spec for the CLI package.            |
 
 | Output         | Description                                          |
 | -------------- | ---------------------------------------------------- |
-| `drift`        | `true` if your file differs from the deterministic output. |
+| `drift`        | `true` if your file is missing any canonical pattern. |
 | `output-hash`  | `sha256:<digest>` of the generated content.          |
 
 ---

@@ -1,15 +1,39 @@
 {
   "name": "go-service",
-  "tree": ["go.mod", "go.sum", "main.go", "internal/handler/handler.go"],
+  "tree": [
+    "go.mod",
+    "go.sum",
+    "main.go",
+    "internal/handler/handler.go"
+  ],
   "expected": [
-    "*.exe",
-    "*.so",
+    "!.env.example",
+    "*.bak",
+    "*.dll",
     "*.dylib",
+    "*.exe",
+    "*.key",
+    "*.keystore",
+    "*.out",
+    "*.p12",
+    "*.pem",
+    "*.pfx",
+    "*.so",
+    "*.swp",
     "*.test",
-    "vendor/",
+    "*.tmp",
+    "*~",
     ".DS_Store",
+    ".env",
+    ".env.*",
     ".idea/",
     ".vscode/",
-    "Thumbs.db"
+    "Thumbs.db",
+    "coverage.txt",
+    "go.work",
+    "go.work.sum",
+    "id_ed25519",
+    "id_rsa",
+    "vendor/"
   ]
 }

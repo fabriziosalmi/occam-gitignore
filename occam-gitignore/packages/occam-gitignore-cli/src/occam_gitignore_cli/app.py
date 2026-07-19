@@ -17,7 +17,10 @@ from occam_gitignore_core import (
     FileSystemTemplateRepository,
     GenerateOptions,
     JsonRulesTable,
+    ManagedBlockError,
+    apply_managed_block,
     generate,
+    missing_patterns,
 )
 
 from .paths import data_root, rules_table_path, templates_root
@@ -123,6 +126,77 @@ def diff(path: Path = typer.Argument(..., exists=True, file_okay=False)) -> None
         typer.echo(f"+ {line}")
     for line in extra:
         typer.echo(f"- {line}")
+
+
+@app.command()
+def check(
+    path: Path = typer.Argument(Path(), exists=True, file_okay=False),
+) -> None:
+    """Fail if `<path>/.gitignore` is missing any canonical pattern (drift guard).
+
+    Coverage check: every canonical pattern for the detected stack must be
+    present. Extra, project-specific lines are allowed and never cause a
+    failure. Exit 0 when all canonical patterns are covered; otherwise exit 1
+    and list the missing canonical lines on stdout (one per line).
+    """
+    fingerprinter, templates, rules = _build_pipeline()
+    output = generate(
+        fingerprinter.fingerprint(scan_tree(path)),
+        GenerateOptions(),
+        templates=templates,
+        rules_table=rules,
+    )
+    target = path / ".gitignore"
+    existing = target.read_text("utf-8") if target.is_file() else ""
+    missing = missing_patterns((r.pattern for r in output.rules), existing)
+    if not missing:
+        typer.echo(
+            f"ok: {target} covers all {len(output.rules)} canonical patterns "
+            f"({output.content_hash})",
+            err=True,
+        )
+        return
+    typer.echo(
+        f"drift: {len(missing)} canonical pattern(s) missing from {target}",
+        err=True,
+    )
+    for pattern in missing:
+        typer.echo(pattern)
+    raise typer.Exit(1)
+
+
+@app.command()
+def apply(
+    path: Path = typer.Argument(Path(), exists=True, file_okay=False),
+    extras: list[str] = typer.Option([], "--extra", "-e", help="Extra patterns."),
+    explain: bool = typer.Option(False, "--explain", help="Annotate provenance."),
+) -> None:
+    """Merge the canonical output into a managed block in `<path>/.gitignore`.
+
+    Only the delimited occam-gitignore block is written or updated; every line
+    outside the block is preserved. Creates the file if absent. Idempotent and
+    deterministic: re-running yields byte-identical output.
+    """
+    fingerprinter, templates, rules = _build_pipeline()
+    output = generate(
+        fingerprinter.fingerprint(scan_tree(path)),
+        GenerateOptions(extras=tuple(extras), include_provenance=explain),
+        templates=templates,
+        rules_table=rules,
+    )
+    target = path / ".gitignore"
+    existing = target.read_text("utf-8") if target.is_file() else ""
+    try:
+        merged = apply_managed_block(existing, output.content)
+    except ManagedBlockError as exc:
+        typer.echo(f"error: {target}: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    _atomic_write_text(target, merged)
+    typer.echo(
+        f"wrote managed block in {target} content={output.content_hash} "
+        f"provenance={output.provenance_hash}",
+        err=True,
+    )
 
 
 @app.command()

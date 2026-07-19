@@ -19,13 +19,13 @@ inputs:
     required: false
     default: '3.12'
   version:
-    description: 'PEP 440 specifier for the occam-gitignore package (e.g. ">=0.1.3,<0.2").'
+    description: 'PEP 440 specifier for the occam-gitignore package (e.g. ">=0.3.0,<0.4").'
     required: false
-    default: '>=0.1.3,<0.2'
+    default: '>=0.3.0,<0.4'
 
 outputs:
   drift:
-    description: '"true" if the existing .gitignore differs from the deterministic output, "false" otherwise.'
+    description: '"true" if the existing .gitignore is missing any canonical pattern, "false" otherwise.'
     value: ${{ steps.check.outputs.drift }}
   output-hash:
     description: 'sha256:<digest> of the deterministic .gitignore content.'
@@ -75,11 +75,11 @@ runs:
         set -euo pipefail
         target_dir="${OCCAM_PATH}"
         gi="${target_dir%/}/.gitignore"
+
+        # Informational: sha256 of the deterministic canonical output.
         tmp="$(mktemp)"
         trap 'rm -f "${tmp}"' EXIT
         occam-gitignore generate "${target_dir}" > "${tmp}"
-
-        # Compute output hash (cross-platform: prefer sha256sum, fall back to shasum).
         if command -v sha256sum >/dev/null 2>&1; then
           digest="sha256:$(sha256sum "${tmp}" | awk '{print $1}')"
         else
@@ -87,27 +87,27 @@ runs:
         fi
         echo "output-hash=${digest}" >> "${GITHUB_OUTPUT}"
 
-        if [[ -f "${gi}" ]] && diff -q "${gi}" "${tmp}" >/dev/null 2>&1; then
-          echo "drift=false" >> "${GITHUB_OUTPUT}"
-          echo "::notice title=occam-gitignore::no drift detected (${digest})"
+        # Coverage drift-guard: `check` exits 0 when every canonical pattern is
+        # present, and exits non-zero listing the missing lines otherwise.
+        # Extra, project-specific lines never trip it.
+        missing="$(mktemp)"
+        trap 'rm -f "${tmp}" "${missing}"' EXIT
+        drift=false
+        occam-gitignore check "${target_dir}" > "${missing}" 2>/dev/null || drift=true
+        echo "drift=${drift}" >> "${GITHUB_OUTPUT}"
+
+        if [[ "${OCCAM_MODE}" == "fix" ]]; then
+          # Merge the managed block in place, preserving project-specific lines.
+          occam-gitignore apply "${target_dir}"
+          echo "::notice title=occam-gitignore::managed block up to date in ${gi} (${digest})"
           exit 0
         fi
 
-        echo "drift=true" >> "${GITHUB_OUTPUT}"
-
-        if [[ "${OCCAM_MODE}" == "check" ]]; then
-          echo "::error title=occam-gitignore::drift detected in ${gi}"
-          if [[ -f "${gi}" ]]; then
-            echo "----- diff (current → deterministic) -----"
-            diff -u "${gi}" "${tmp}" || true
-          else
-            echo "----- proposed .gitignore -----"
-            cat "${tmp}"
-          fi
+        # mode=check
+        if [[ "${drift}" == "true" ]]; then
+          echo "::error title=occam-gitignore::${gi} is missing canonical patterns"
+          echo "----- missing canonical patterns -----"
+          cat "${missing}"
           exit 1
         fi
-
-        # mode=fix
-        mv "${tmp}" "${gi}"
-        trap - EXIT
-        echo "::notice title=occam-gitignore::wrote ${gi} (${digest})"
+        echo "::notice title=occam-gitignore::no drift detected (${digest})"

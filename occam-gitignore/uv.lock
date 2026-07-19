@@ -619,7 +619,7 @@ wheels = [
 
 [[package]]
 name = "occam-gitignore"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "packages/occam-gitignore-cli" }
 dependencies = [
     { name = "occam-gitignore-core" },
@@ -664,7 +664,7 @@ requires-dist = [{ name = "occam-gitignore-core", editable = "packages/occam-git
 
 [[package]]
 name = "occam-gitignore-core"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "packages/occam-gitignore-core" }
 
 [[package]]

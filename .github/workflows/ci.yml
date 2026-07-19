@@ -62,6 +62,7 @@ jobs:
             --rules-table data/rules_table.json \
             --repeats 5 \
             --min-recall 0.85 \
+            --min-precision 0.99 \
             --max-p99-ms 5.0
         working-directory: occam-gitignore
 

@@ -4,6 +4,44 @@ All notable changes to `occam-gitignore` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-07-19
+
+### Added
+- **`occam-gitignore check [PATH]`** — a coverage drift-guard. It detects the
+  stack, computes the canonical pattern set, and exits non-zero (listing the
+  missing lines on stdout) when the target `.gitignore` is missing any canonical
+  pattern. Extra, project-specific lines are always allowed, so it is safe to
+  run in CI and pre-commit hooks without fighting hand-added rules.
+- **`occam-gitignore apply [PATH]`** — merges the canonical output into a single
+  delimited *managed block* (`# >>> occam-gitignore >>>` … `# <<< occam-gitignore <<<`)
+  instead of overwriting the whole file. Lines outside the block are preserved;
+  an existing block is replaced in place; if absent, the block is appended. The
+  operation is idempotent and deterministic (re-running is a byte-for-byte no-op).
+- Core: pure `missing_patterns()` (coverage) and `apply_managed_block()` /
+  `build_managed_block()` (merge) helpers, plus a `ManagedBlockError` raised on
+  malformed markers.
+- Benchmark: a `--min-precision` gate (exit code 5). A recall-only gate lets
+  over-generation rot precision silently; CI now also enforces precision
+  (`--min-precision 0.99`).
+
+### Fixed
+- **Bench corpus honesty.** After 0.2.0 moved `.env` and the secret patterns
+  into `common`, the `bench/corpus/*.json` `expected` sets still assumed `.env`
+  was Python-only. Every non-Python stack therefore counted the now-universal
+  secret lines (`.env`, `.env.*`, `!.env.example`, `*.pem`, `*.key`, `*.p12`,
+  `*.pfx`, `*.keystore`, `id_rsa`, `id_ed25519`) as false positives, so macro
+  precision had silently collapsed to ~0.30 while recall stayed 1.0 and the
+  recall-only gate kept CI green. The `expected` sets are realigned to the true
+  canonical output for each stack; macro precision is back to 1.00.
+
+### Changed
+- The composite GitHub Action now runs `occam-gitignore check` (coverage guard)
+  in `check` mode and `occam-gitignore apply` (managed-block merge) in `fix`
+  mode. The default `version` input is bumped to `>=0.3.0,<0.4`.
+- Bumped `occam-gitignore` and `occam-gitignore-core` to 0.3.0. The core version
+  is part of every output's provenance line, so the 5 snapshots and the 34-case
+  conformance suite were regenerated; generation stays byte-for-byte deterministic.
+
 ## [0.2.0] — 2026-07-19
 
 ### Security
@@ -83,6 +121,7 @@ All notable changes to `occam-gitignore` are documented here. The format follows
 - Composite GitHub Action (`uses: fabriziosalmi/gitignore@v0.1.x`) for
   drift check / auto-fix in CI.
 
+[0.3.0]: https://github.com/fabriziosalmi/occam-gitignore/releases/tag/v0.3.0
 [0.2.0]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.2.0
 [0.1.3]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.1.3
 [0.1.2]: https://github.com/fabriziosalmi/gitignore/releases/tag/v0.1.2
