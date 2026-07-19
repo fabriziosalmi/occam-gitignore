@@ -22,11 +22,11 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/fabriziosalmi/gitignore"
+Homepage = "https://github.com/fabriziosalmi/occam-gitignore"
 Documentation = "https://fabriziosalmi.github.io/gitignore/"
-Repository = "https://github.com/fabriziosalmi/gitignore"
-Issues = "https://github.com/fabriziosalmi/gitignore/issues"
-Changelog = "https://github.com/fabriziosalmi/gitignore/blob/main/CHANGELOG.md"
+Repository = "https://github.com/fabriziosalmi/occam-gitignore"
+Issues = "https://github.com/fabriziosalmi/occam-gitignore/issues"
+Changelog = "https://github.com/fabriziosalmi/occam-gitignore/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]
