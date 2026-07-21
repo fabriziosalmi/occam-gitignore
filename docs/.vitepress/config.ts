@@ -14,6 +14,18 @@ export default defineConfig({
   },
 
   head: [
+    // Tutto first-party. 'unsafe-inline' serve perche' VitePress emette
+    // uno script inline per il tema e stili inline.
+    [
+      'meta',
+      {
+        'http-equiv': 'Content-Security-Policy',
+        content:
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; " +
+          "style-src 'self' 'unsafe-inline'; img-src 'self' data:; " +
+          "font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'",
+      },
+    ],
     ['meta', { name: 'theme-color', content: '#0a0a0a' }],
     ['meta', { property: 'og:title', content: 'occam-gitignore' }],
     ['meta', { property: 'og:description', content: 'Deterministic .gitignore generation.' }],
@@ -92,7 +104,7 @@ export default defineConfig({
     ],
 
     footer: {
-      message: 'Released under the MIT License.',
+      message: 'Released under the MIT License.' + ' · <a href="https://fabriziosalmi.github.io/privacy">Privacy &amp; legal</a>',
       copyright: 'Copyright © 2026 Fabrizio Salmi',
     },
 
