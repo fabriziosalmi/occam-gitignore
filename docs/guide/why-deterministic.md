@@ -2,7 +2,7 @@
 
 A `.gitignore` is a configuration file consumed by tooling and humans. It is
 not a creative artefact. There is no reason for the same project shape to
-produce different ignore files at different times — yet most generators
+produce different ignore files at different times, yet most generators
 (template assemblers, LLMs) do exactly that.
 
 `occam-gitignore` rejects this. The contract is:
@@ -16,7 +16,7 @@ produce different ignore files at different times — yet most generators
 - **Caching is trivial.** A hash uniquely identifies an output; no second run
   is ever needed for the same inputs.
 - **Code review is meaningful.** A diff is caused by a real input change
-  (template version, rules-table version, or detected features) — never by
+  (template version, rules-table version, or detected features), never by
   noise.
 - **Audit and reproduction are free.** `output_hash` + `core_version` +
   `rules_table_version` is a complete provenance record.

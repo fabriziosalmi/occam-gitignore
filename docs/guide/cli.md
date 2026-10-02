@@ -27,7 +27,7 @@ Walks the given path, fingerprints features, and writes a `.gitignore` to
 | `--rules-table FILE`  | path   | `data/rules_table.json`         | Mined rules table                          |
 | `--no-comments`       | flag   | `false`                         | Suppress header and section comments       |
 | `--provenance`        | flag   | `false`                         | Append `# <feature>` to each rule          |
-| `--extra PATTERN`     | repeat | —                               | Add a user pattern (sorted last)           |
+| `--extra PATTERN`     | repeat | none                            | Add a user pattern (sorted last)           |
 | `--stdout`            | flag   | `false`                         | Print to stdout instead of writing a file  |
 
 ### Example

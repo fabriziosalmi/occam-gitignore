@@ -27,7 +27,7 @@ CI runs the same commands. PRs that don't pass are not merged.
 
 ## Design rules
 
-1. **The core stays pure.** No I/O, no clock, no env vars, no random — and
+1. **The core stays pure.** No I/O, no clock, no env vars, no random; and
    zero runtime dependencies in `occam-gitignore-core`.
 2. **No `Any`.** `mypy.ini` sets `disallow_any_explicit = true`. Use
    `Protocol`, `TypedDict`, or generics.
@@ -53,4 +53,4 @@ CI runs the same commands. PRs that don't pass are not merged.
 
 The rules table is content-addressed. If you change it, every downstream
 consumer sees a new `rules_table_version` and every `output_hash` shifts
-accordingly. Do this only when warranted by mining results — never by hand.
+accordingly. Do this only when warranted by mining results, never by hand.

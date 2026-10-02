@@ -60,12 +60,12 @@ The core ships two adapters for each: `FileSystemTemplateRepository` /
 2. **Inject implicit features.** When any feature matches and the template
    repository provides a `common` feature, OS/IDE patterns are added.
 3. **Collect rules** from templates, then from the rules table, then from
-   user extras — in that fixed precedence order.
+   user extras, in that fixed precedence order.
 4. **Stable dedupe.** The first occurrence wins (preserves provenance from
    the highest-priority source). Output sorted by `(source, pattern)`.
 5. **Render.** Optional header, optional section comments, optional
    provenance suffix per rule. Output finalised with a trailing newline.
 6. **Hash.** `sha256(content)` is computed and returned in `output_hash`.
 
-The whole pipeline is one pure function — no I/O, no clock, no allocations
+The whole pipeline is one pure function: no I/O, no clock, no allocations
 that depend on PYTHONHASHSEED.

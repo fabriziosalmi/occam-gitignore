@@ -42,19 +42,19 @@ rules.extras_for(frozenset({"python"}))  # tuple of Rule(...)
 ## Mining a new table
 
 The `occam-gitignore-training` package mines a rules table from JSONL
-records — one record per repo — describing the files listed and the
+records (one record per repo) describing the files listed and the
 `.gitignore` rules the repo actually used. The pipeline:
 
 1. **Fingerprint** each record's file list (or use a declared feature set).
 2. **Group** records by feature.
-3. **Single-feature rules** — emit a pattern for feature *F* iff its support
+3. **Single-feature rules**: emit a pattern for feature *F* iff its support
    in *F*-bearing repos clears `min_support` and the pattern is not already
    covered by *F*'s template.
-4. **Pair rules** — for feature pairs *(A, B)*, emit a pattern iff:
+4. **Pair rules**: for feature pairs *(A, B)*, emit a pattern iff:
    - support among *{A,B}* repos clears `min_pair_support`,
    - the same support is `>= min_pair_lift × max(support_A, support_B)`,
    - it's not already emitted as a single-feature rule.
-5. **Render** the result with `to_payload(...)` — content-addressed,
+5. **Render** the result with `to_payload(...)`, content-addressed,
    sorted, stable.
 
 ```bash

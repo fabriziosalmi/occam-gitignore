@@ -28,27 +28,27 @@ _CASES = (
     (
         "python",
         ("pyproject.toml",),
-        "sha256:de7f3061df49ff4035be5b6152d36c0cb749b62f55e5cabd4058013f2f70cca4",
+        "sha256:546fa208269a459d761e802636a2818336f63ffdab3f33ca5c11f89b8c835731",
     ),
     (
         "node-ts",
         ("package.json", "tsconfig.json"),
-        "sha256:86d9c355e8defe5d0bb64aabf9ae7a512555e9ee34abe4c62f883f9e34dcaa93",
+        "sha256:91a5acb0121733e3d225cd550ba358a40fb6d5a612cb7110fa8993afcc67aa3f",
     ),
     (
         "python-docker",
         ("pyproject.toml", "Dockerfile", "docker-compose.yml"),
-        "sha256:76f930fffec29dcb9be662d9618458505264bfa67a5d27a49bd23a65fc8c8dd3",
+        "sha256:6511e0b14913e9455b8f3010fba6bc4cdc6b13884b4527357ec41ba742bd3e02",
     ),
     (
         "java",
         ("pom.xml", "src/main/java/A.java"),
-        "sha256:0db6ad2f2f53add2402c76fff136006c9228d867778fc8e27385ae7c457c4593",
+        "sha256:5fbbe7c7afbe449a6305312d508def7d46c2841c4eee7949059dfe91678587a9",
     ),
     (
         "rust",
         ("Cargo.toml", "src/main.rs"),
-        "sha256:ca7278c6e91c667506e42fed8bb67716c11d2f13ff30b3a4a1cef37f06db8498",
+        "sha256:6f0bd2bf835b01ab988911ac646827c79a2b5ad047d77e0d4b84675c194d3980",
     ),
 )
 

@@ -23,7 +23,7 @@ The default `Fingerprinter` ships with **11 detectors**:
 | `swift`      | `Package.swift`, `*.swift`                                   |
 
 A 12th feature, **`common`**, exists only as a template (`.DS_Store`,
-`.idea/`, `.vscode/`, `Thumbs.db`, etc.). It is not detected — it is
+`.idea/`, `.vscode/`, `Thumbs.db`, etc.). It is not detected; it is
 **implicitly included** by `generate()` whenever the fingerprint is
 non-empty and a `common` template is present in the repository.
 
@@ -40,7 +40,7 @@ class FingerprintResult:
     evidence: tuple[tuple[str, str], ...]  # sorted (feature_name, witness_path)
 ```
 
-`evidence` carries one witness path per detected feature — useful for
+`evidence` carries one witness path per detected feature, useful for
 debugging and explainable output.
 
 ## Extending detectors
@@ -58,5 +58,5 @@ fp = DefaultFingerprinter(detectors=custom)
 ```
 
 In practice, prefer adding the detector to `fingerprint.py` and submitting a
-PR — that way it benefits everyone, the rules-table miner sees the new
+PR: that way it benefits everyone, the rules-table miner sees the new
 feature, and the bench corpus can cover it.

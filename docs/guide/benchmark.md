@@ -19,7 +19,7 @@ The corpus lives in `bench/corpus/*.json`. Each case is:
 }
 ```
 
-`expected` is a **must-have** set — the patterns whose absence would make
+`expected` is a **must-have** set: the patterns whose absence would make
 the output wrong for that stack. It is intentionally smaller than the
 total set the generator emits: this keeps the recall metric meaningful and
 the precision metric honest.
@@ -33,8 +33,8 @@ For each case:
 - `recall    = |P ∩ E| / |E|`
 - `precision = |P ∩ E| / |P|`
 - `f1        = 2·precision·recall / (precision + recall)`
-- `false_negatives = sorted(E - P)` — surfaced via `--diff`
-- `false_positives = sorted(P - E)` — surfaced via `--diff`
+- `false_negatives = sorted(E - P)`, surfaced via `--diff`
+- `false_positives = sorted(P - E)`, surfaced via `--diff`
 - `stability` = `1` iff `output_hash` is identical across all `--repeats`
   runs of this case.
 

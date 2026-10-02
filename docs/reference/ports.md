@@ -14,9 +14,9 @@ class TemplateRepository(Protocol):
 
 ### Built-in adapters
 
-- **`FileSystemTemplateRepository(root: Path, version: str)`** — loads
+- **`FileSystemTemplateRepository(root: Path, version: str)`**: loads
   `<feature>.gitignore` files from a directory; caches per feature.
-- **`InMemoryTemplateRepository(data: dict[Feature, tuple[Rule, ...]], version: str = "test")`** —
+- **`InMemoryTemplateRepository(data: dict[Feature, tuple[Rule, ...]], version: str = "test")`**:
   for tests and embedded use.
 
 `features()` is sorted; the generator never relies on insertion order.
@@ -34,8 +34,8 @@ returned iff *S ⊆ features*. The result is sorted by `(features, pattern)`.
 
 ### Built-in adapters
 
-- **`JsonRulesTable.from_file(path: Path)`** — loads a `rules_table.json`.
-- **`InMemoryRulesTable(...)`** — for tests.
+- **`JsonRulesTable.from_file(path: Path)`**: loads a `rules_table.json`.
+- **`InMemoryRulesTable(...)`**: for tests.
 
 ## Custom adapters
 
@@ -46,4 +46,4 @@ Anything that satisfies the protocols works. Examples:
 - A `RulesTable` that reads from a database, pinning `version()` to a
   schema-migration revision.
 
-The core never serializes these objects — it only calls the methods above.
+The core never serializes these objects; it only calls the methods above.

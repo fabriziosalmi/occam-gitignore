@@ -1,12 +1,12 @@
 {
-  "content_hash": "sha256:906d8cc057a7afb0ea27b6a5689d22f4c8b323fa2ed5225f3796e612dba70e2a",
-  "core_version": "0.3.0",
+  "content_hash": "sha256:174fb0f1b769b32d145e8464edf85fd3cce9ffa1bcb365dc511278dba1cdbe56",
+  "core_version": "0.4.0",
   "features": [
     "common",
     "docker",
     "terraform"
   ],
-  "provenance_hash": "sha256:b584b8730cbaeb2c9ba722c7be77b64988ab0e498290b80cc2cd422638beb33a",
+  "provenance_hash": "sha256:b1be86dc2d94e8f128bbf6455c7b32ce328515a48d87542b9d0dfa7ef7abcbd4",
   "rules_table_version": "sha256:4f53cda18c2b",
   "templates_version": "sha256:6fc72bdfe071"
 }

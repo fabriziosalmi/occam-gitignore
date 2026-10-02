@@ -1,11 +1,11 @@
 {
-  "content_hash": "sha256:e148a59bc64212697474b1be3e701b70a6ae4148ec29153d218e0d275a9728d2",
-  "core_version": "0.3.0",
+  "content_hash": "sha256:711e7aa5b0100ca7af2d8a021e188df76ee5b7b2d47b68b66da55981c591a16b",
+  "core_version": "0.4.0",
   "features": [
     "common",
     "go"
   ],
-  "provenance_hash": "sha256:b36824b82550e313e244364ba7b44165b7ab505db598a36062eb8220b733c2a4",
+  "provenance_hash": "sha256:b7ab4456336092cd028d511a0adf50711b8bb6ca198925db8d63915752801359",
   "rules_table_version": "sha256:4f53cda18c2b",
   "templates_version": "sha256:6fc72bdfe071"
 }

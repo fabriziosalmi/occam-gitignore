@@ -13,7 +13,7 @@ class RuleSource(StrEnum):
 ```
 
 These are also the **section order** in the rendered file (templates first,
-then mined, then user extras). The order is not configurable — it is the
+then mined, then user extras). The order is not configurable: it is the
 deterministic precedence used by stable dedupe.
 
 ## Inline provenance

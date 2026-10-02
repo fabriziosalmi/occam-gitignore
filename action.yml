@@ -19,9 +19,9 @@ inputs:
     required: false
     default: '3.12'
   version:
-    description: 'PEP 440 specifier for the occam-gitignore package (e.g. ">=0.3.0,<0.4").'
+    description: 'PEP 440 specifier for the occam-gitignore package (e.g. ">=0.4.0,<0.5").'
     required: false
-    default: '>=0.3.0,<0.4'
+    default: '>=0.4.0,<0.5'
 
 outputs:
   drift:

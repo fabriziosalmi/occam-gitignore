@@ -37,8 +37,8 @@ Usage: occam-gitignore check [PATH]
   Coverage drift-guard. Detect the stack, compute the canonical pattern set,
   and verify that PATH/.gitignore CONTAINS every canonical pattern.
 
-  Exit 0  — all canonical patterns are present.
-  Exit 1  — one or more are missing; the missing lines are printed to stdout.
+  Exit 0: all canonical patterns are present.
+  Exit 1: one or more are missing; the missing lines are printed to stdout.
 
   Extra, project-specific lines are always allowed and never cause a failure.
   PATH defaults to the current directory.
@@ -69,9 +69,9 @@ Usage: occam-gitignore audit [PATH]
   per line: `secret|tracked <TAB> path <TAB> rule`. Likely credentials come
   first. Files are never opened; git's own matcher decides.
 
-  Exit 0  — no tracked file is matched.
-  Exit 1  — at least one is; the list is on stdout.
-  Exit 2  — PATH is not inside a git work tree, or the managed block is malformed.
+  Exit 0: no tracked file is matched.
+  Exit 1: at least one is; the list is on stdout.
+  Exit 2: PATH is not inside a git work tree, or the managed block is malformed.
 ```
 
 ## `occam-gitignore version`
