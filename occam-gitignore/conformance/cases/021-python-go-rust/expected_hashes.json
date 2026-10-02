@@ -1,5 +1,5 @@
 {
-  "content_hash": "sha256:53d938a2aab2e19547bc00fa60886ee026a5b1c4129c64579fa3060a9cc95258",
+  "content_hash": "sha256:b1e238a49186898eb0221d991522f8ddde80bb7b562cd4d8627eb7f9171764b4",
   "core_version": "0.3.0",
   "features": [
     "common",
@@ -7,7 +7,7 @@
     "python",
     "rust"
   ],
-  "provenance_hash": "sha256:78f61367c30c2576739cfb5549b048f445ba8f03fe8fe12a60910cb91881cf62",
+  "provenance_hash": "sha256:9ef099f58f186a842449dedab607199b354f511cb246c83185ed9d51d9d01afd",
   "rules_table_version": "sha256:4f53cda18c2b",
-  "templates_version": "sha256:fac86df08594"
+  "templates_version": "sha256:6fc72bdfe071"
 }

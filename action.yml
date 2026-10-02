@@ -11,7 +11,7 @@ inputs:
     required: false
     default: '.'
   mode:
-    description: 'Operation mode: "check" fails on drift; "fix" rewrites .gitignore in place.'
+    description: 'Operation mode: "check" fails on drift; "fix" merges the managed block, keeping project-specific lines.'
     required: false
     default: 'check'
   python-version:

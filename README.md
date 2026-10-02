@@ -56,11 +56,16 @@ From inside any repo:
 
 ```bash
 cd /path/to/your/repo
-occam-gitignore generate . > .gitignore
+occam-gitignore apply .
 ```
 
-That's it. The tool looked at your files, decided which ecosystems you use (Python? Node? Docker?
-Rust? …), and wrote the right `.gitignore`.
+That's it. The tool asked git which files make up the project, decided which ecosystems you use
+(Python? Node? Docker? Rust? …), and put the canonical rules in a managed block at the top of your
+`.gitignore`. Every line you already had is kept, below the block, so your own rules always win.
+
+> **Don't** run `occam-gitignore generate . > .gitignore` on an existing repository: it replaces
+> the whole file and silently drops every project-specific rule, un-ignoring whatever they
+> covered. `generate` is for previewing the canonical output; `apply` is for updating a repository.
 
 ### See what it detected
 
@@ -94,8 +99,10 @@ occam-gitignore check .
 
 ### Merge without clobbering (`apply`)
 
-`apply` writes the canonical rules into a single delimited **managed block** and leaves every
-line outside it untouched. It is idempotent and deterministic, so it is safe to re-run and to
+`apply` writes the canonical rules into a single delimited **managed block** at the top of the file
+and leaves every line outside it untouched. Because git applies the *last* matching pattern, your own
+lines (below the block) always override it: a canonical re-include such as `!.env.example` can never
+undo a file you chose to ignore. It is idempotent and deterministic, so it is safe to re-run and to
 commit:
 
 ```bash
@@ -103,14 +110,33 @@ occam-gitignore apply .
 ```
 
 ```gitignore
-# your hand-written rules stay here, untouched
-/local-secrets/
-
 # >>> occam-gitignore >>>
 # managed by occam-gitignore — do not edit inside this block
 # ...canonical, deterministic output...
 # <<< occam-gitignore <<<
+
+# your hand-written rules stay here, untouched, and take precedence
+/local-secrets/
 ```
+
+---
+
+### Find tracked files the rules disagree with (`audit`)
+
+A `.gitignore` never untracks a file. If a rule matches something already committed, the file
+stays in the repo and new files like it are silently skipped. `audit` lists them, credentials
+first, without opening any file:
+
+```bash
+occam-gitignore audit .
+# secret   config/.env         .env
+# tracked  dist/index.js       dist/
+```
+
+Exit 1 when anything is listed. For each line, either the file should not be in git
+(`git rm --cached` it, and rotate it if it is a credential), or your project keeps it on purpose:
+say so with a line of your own below the managed block (e.g. `!dist/`). `apply` prints the same
+count as a warning.
 
 ---
 
@@ -295,13 +321,13 @@ Full developer docs: <https://fabriziosalmi.github.io/gitignore/>
 ## FAQ
 
 **Q: Will it overwrite my hand-written `.gitignore`?**
-Only if you tell it to. `occam-gitignore generate .` writes to stdout. The Action with
-`mode: check` only fails the build; `mode: fix` rewrites the file in place.
+No. `apply` (and the Action's `mode: fix`) only rewrites the managed block and keeps every other
+line. `generate .` prints to stdout; `generate --write` refuses to replace an existing, different
+`.gitignore` unless you add `--force`.
 
 **Q: Can I add custom rules?**
-Yes. Append your project-specific lines below the generated block, or pass them as `extras` via
-the API/MCP. The deterministic block is regenerated; your tail is preserved by convention (keep
-your local rules below the last generated line).
+Yes. Write them anywhere outside the managed block, or pass them as `extras` via the CLI/API/MCP.
+The block is regenerated; your lines are preserved and, sitting after the block, override it.
 
 **Q: Does it call out to any service?**
 No. It's a pure local tool. The HTTP adapter is something *you* run; it never calls anywhere.

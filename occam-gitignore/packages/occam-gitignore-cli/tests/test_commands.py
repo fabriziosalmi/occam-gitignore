@@ -86,8 +86,8 @@ def test_apply_creates_managed_block_and_preserves_custom_lines(tmp_path: Path) 
     assert MANAGED_BLOCK_START in content
     assert MANAGED_BLOCK_END in content
     assert ".env" in content
-    # Custom content precedes the managed block.
-    assert content.index("secrets.txt") < content.index(MANAGED_BLOCK_START)
+    # The block comes first; hand-written lines follow it and therefore win.
+    assert content.index(MANAGED_BLOCK_END) < content.index("secrets.txt")
 
 
 def test_apply_is_idempotent_on_disk(tmp_path: Path) -> None:
@@ -120,3 +120,33 @@ def test_apply_fails_on_malformed_block(tmp_path: Path) -> None:
     (repo / ".gitignore").write_text(f"{MANAGED_BLOCK_START}\nfoo\n", "utf-8")
     result = runner.invoke(app, ["apply", str(repo)])
     assert result.exit_code == 2
+
+
+# --------------------------------------------------------------------------- #
+# generate --write                                                             #
+# --------------------------------------------------------------------------- #
+
+
+def test_generate_write_refuses_to_clobber_a_different_gitignore(tmp_path: Path) -> None:
+    repo = _python_repo(tmp_path)
+    gi = repo / ".gitignore"
+    gi.write_text("private/\n", "utf-8")
+    result = runner.invoke(app, ["generate", str(repo), "--write"])
+    assert result.exit_code == 2
+    assert "apply" in result.output
+    assert gi.read_text("utf-8") == "private/\n"
+
+
+def test_generate_write_force_replaces(tmp_path: Path) -> None:
+    repo = _python_repo(tmp_path)
+    gi = repo / ".gitignore"
+    gi.write_text("private/\n", "utf-8")
+    assert runner.invoke(app, ["generate", str(repo), "--write", "--force"]).exit_code == 0
+    assert "private/" not in gi.read_text("utf-8")
+
+
+def test_generate_write_creates_and_rewrites_identical_file(tmp_path: Path) -> None:
+    repo = _python_repo(tmp_path)
+    assert runner.invoke(app, ["generate", str(repo), "--write"]).exit_code == 0
+    # Re-running over its own identical output is not a clobber.
+    assert runner.invoke(app, ["generate", str(repo), "--write"]).exit_code == 0

@@ -86,7 +86,7 @@ jobs:
       - uses: fabriziosalmi/gitignore@v0.1.3
         with:
           path: '.'
-          mode: 'check'   # or 'fix' to rewrite the file in place
+          mode: 'check'   # or 'fix' to merge the managed block (own lines are kept)
 ```
 
 Inputs: `path` (default `.`), `mode` (`check`|`fix`, default `check`),

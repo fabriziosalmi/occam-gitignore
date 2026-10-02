@@ -63,3 +63,30 @@ def test_ml_detection_is_conservative() -> None:
     """A plain Python repo (no model weights) must NOT be flagged as ml."""
     fp = DefaultFingerprinter().fingerprint(("pyproject.toml", "src/main.py"))
     assert Feature("ml") not in fp.features
+
+
+@pytest.mark.parametrize(
+    "tree",
+    [
+        ("docs/.vitepress/config.ts", "assets/app.js"),  # a docs site is not a Node project
+        ("Formula/tool.rb",),  # a Homebrew tap is not a Ruby project
+        ("vendor/github.com/example/lib/Rakefile",),  # nor is a vendored Rakefile
+    ],
+)
+def test_node_and_ruby_need_a_manifest(tree: tuple[str, ...]) -> None:
+    names = {f.name for f in DefaultFingerprinter().fingerprint(tree).features}
+    assert not names & {"node", "ruby"}
+
+
+@pytest.mark.parametrize(
+    ("tree", "expected"),
+    [
+        (("web/package.json",), "node"),
+        (("pnpm-lock.yaml",), "node"),
+        (("bun.lock",), "node"),
+        (("Gemfile.lock",), "ruby"),
+        (("tool.gemspec",), "ruby"),
+    ],
+)
+def test_manifests_and_lockfiles_detect(tree: tuple[str, ...], expected: str) -> None:
+    assert Feature(expected) in DefaultFingerprinter().fingerprint(tree).features
