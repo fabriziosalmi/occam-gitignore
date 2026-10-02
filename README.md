@@ -1,6 +1,6 @@
 # occam-gitignore
 
-> Generate the canonical `.gitignore` for any repo — **deterministic**, **fast**, **hash-verifiable**.
+> Generate the canonical `.gitignore` for any repo: **deterministic**, **fast**, **hash-verifiable**.
 
 [![PyPI](https://img.shields.io/pypi/v/occam-gitignore.svg)](https://pypi.org/project/occam-gitignore/)
 [![CI](https://github.com/fabriziosalmi/gitignore/actions/workflows/ci.yml/badge.svg)](https://github.com/fabriziosalmi/gitignore/actions/workflows/ci.yml)
@@ -27,13 +27,13 @@ Every project ends up with a hand-rolled `.gitignore` that is:
 
 You need Python 3.11 or newer.
 
-### Option A — pip (works everywhere)
+### Option A: pip (works everywhere)
 
 ```bash
 pip install occam-gitignore
 ```
 
-### Option B — pipx / uv (recommended, isolated)
+### Option B: pipx / uv (recommended, isolated)
 
 ```bash
 pipx install occam-gitignore
@@ -45,7 +45,7 @@ Verify the install:
 
 ```bash
 occam-gitignore version
-# core=0.1.3 rules_table=sha256:72fd0c323cc1
+# core=0.4.0 rules_table=sha256:4f53cda18c2b
 ```
 
 ---
@@ -89,7 +89,7 @@ changes and apply them.
 
 `check` is a **coverage guard**: it succeeds when every canonical pattern is present and fails
 (exit code 1), listing the missing lines, when one is not. Extra project-specific lines are
-allowed — great for CI and pre-commit hooks.
+allowed, which makes it a good fit for CI and pre-commit hooks.
 
 ```bash
 occam-gitignore check .
@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: fabriziosalmi/occam-gitignore@v0.3.0
+      - uses: fabriziosalmi/occam-gitignore@v0.4.0
         with:
           path: '.'
           mode: 'check'   # fail the build if a canonical pattern is missing
@@ -161,8 +161,8 @@ jobs:
 
 The check is a **coverage guard**: it fails only when your `.gitignore` is *missing* a
 canonical pattern (e.g. `.env` slipped out). Extra, project-specific lines you added by hand
-are always allowed. To **auto-fix**, use `mode: 'fix'` — it merges the canonical rules into a
-delimited managed block and leaves your custom lines untouched — then commit the result with
+are always allowed. To **auto-fix**, use `mode: 'fix'`: it merges the canonical rules into a
+delimited managed block and leaves your custom lines untouched. Then commit the result with
 one of the common "auto-commit" actions.
 
 | Input            | Default          | Description                                  |
@@ -170,7 +170,7 @@ one of the common "auto-commit" actions.
 | `path`           | `.`              | Repo path to scan.                           |
 | `mode`           | `check`          | `check` fails on missing canonical patterns; `fix` merges the managed block. |
 | `python-version` | `3.12`           | Python used to install the CLI.              |
-| `version`        | `>=0.3.0,<0.4`   | PEP 440 spec for the CLI package.            |
+| `version`        | `>=0.4.0,<0.5`   | PEP 440 spec for the CLI package.            |
 
 | Output         | Description                                          |
 | -------------- | ---------------------------------------------------- |
@@ -228,7 +228,7 @@ assistant (Claude Desktop, Cursor, Continue, …) can call it as a tool.
 ### Run it
 
 ```bash
-# stdio transport (default — used by Claude Desktop, Cursor, ...)
+# stdio transport (default, used by Claude Desktop, Cursor, ...)
 occam-gitignore serve mcp
 
 # streamable HTTP transport
@@ -272,7 +272,7 @@ Three guarantees:
 2. **Hash-verified.** Every output is content-addressed by `sha256(content)`. The CI Action and
    the API both expose this hash.
 3. **Versioned data.** The rules table and templates have their own `sha256` versions. If they
-   change, the output hash changes — there are no silent updates.
+   change, the output hash changes: there are no silent updates.
 
 This means you can:
 
@@ -298,12 +298,12 @@ welcome.
 ## Architecture (for the curious)
 
 ```
-core         — pure deterministic generator (no I/O beyond what the adapters give it)
-cli          — Typer CLI; ships templates + rules table inside the wheel
-api          — FastAPI HTTP adapter
-mcp          — Model Context Protocol server (FastMCP)
-bench        — corpus-based quality + latency benchmark with gates
-training     — offline pipeline to mine new rules from JSONL of real repos
+core         pure deterministic generator (no I/O beyond what the adapters give it)
+cli          Typer CLI; ships templates + rules table inside the wheel
+api          FastAPI HTTP adapter
+mcp          Model Context Protocol server (FastMCP)
+bench        corpus-based quality + latency benchmark with gates
+training     offline pipeline to mine new rules from JSONL of real repos
 ```
 
 Determinism is enforced by:
@@ -355,4 +355,4 @@ The project is a uv workspace with 6 packages. See
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).

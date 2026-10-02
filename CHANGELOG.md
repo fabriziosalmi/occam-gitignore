@@ -4,7 +4,7 @@ All notable changes to `occam-gitignore` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.0] — 2026-10-02
 
 Driven by read-only dry runs of `apply` against real repositories (see
 `occam-gitignore-bench realworld`), which showed rules un-ignoring files the
@@ -64,6 +64,10 @@ matching files projects deliberately track.
 - The template version changes, so every output hash changes; snapshots, the
   conformance suite and the bench corpus are regenerated for exactly these
   rule changes.
+- Bumped `occam-gitignore` and `occam-gitignore-core` to 0.4.0 (behaviour
+  change, hence a minor release). The composite Action's default `version`
+  input is now `>=0.4.0,<0.5`; workflows pinned to an older Action tag keep
+  the 0.3 behaviour until they opt in.
 
 ## [0.3.0] — 2026-07-19
 

@@ -56,7 +56,7 @@ Generate from an explicit feature list (or from a tree).
 
 **Headers:**
 
-- `ETag: "sha256:0bc905..."` — equal to `output_hash`. Use it for HTTP
+- `ETag: "sha256:0bc905..."`: equal to `output_hash`. Use it for HTTP
   caching: send `If-None-Match` and you'll get a `304 Not Modified` when
   the inputs haven't changed.
 

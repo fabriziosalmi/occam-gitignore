@@ -2,7 +2,7 @@
 
 `occam-gitignore-mcp` exposes the same generator as a
 [Model Context Protocol](https://modelcontextprotocol.io/) server. LLM
-clients can call it as a tool — without inheriting non-determinism from the
+clients can call it as a tool, without inheriting non-determinism from the
 model itself.
 
 ## Run
@@ -48,7 +48,7 @@ Returns `{ "added": [...], "removed": [...] }`.
 { "tree": ["pyproject.toml", "src/main.py"] }
 ```
 
-Returns the fingerprint result (features + evidence) — useful when an LLM
+Returns the fingerprint result (features + evidence), useful when an LLM
 wants to reason about which features were detected before committing to a
 generation.
 
@@ -56,7 +56,7 @@ generation.
 
 The MCP adapter exists precisely **because** the rest of the stack is
 deterministic. It gives an LLM a way to delegate the part of the task that
-should never be guessed — the actual ignore patterns — to a verifiable
+should never be guessed (the actual ignore patterns) to a verifiable
 function, while keeping the LLM in charge of the parts that legitimately
 need judgement (which user extras to add, which paths to scan, how to
 explain the result to the user).

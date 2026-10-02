@@ -70,5 +70,5 @@ You should re-mine when:
 2. You add a new feature/detector, or
 3. You observe `false_negatives` in `bench --diff` that look generalisable.
 
-In all other cases, leave the rules table alone — its stability is part of
+In all other cases, leave the rules table alone: its stability is part of
 the determinism contract for downstream consumers.

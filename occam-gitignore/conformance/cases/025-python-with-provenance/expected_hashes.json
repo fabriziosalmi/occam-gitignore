@@ -1,11 +1,11 @@
 {
-  "content_hash": "sha256:55057c3ac9ce4359f53dd0feafea1ede68f55a6fa35f20f0f121b2fadb87bc47",
-  "core_version": "0.3.0",
+  "content_hash": "sha256:5e60610101684e1cf165ea5f9acdbfee8f7f93b47d9725b82dfd901246e06c61",
+  "core_version": "0.4.0",
   "features": [
     "common",
     "python"
   ],
-  "provenance_hash": "sha256:b19a18635b959485a4eb4edd8064a36fe7ffdcca9e06ad63bf468c871be72a6b",
+  "provenance_hash": "sha256:4e8b65d66de514a1fb9e84879daa82419cd4735f30be91cca936c2a301662fda",
   "rules_table_version": "sha256:4f53cda18c2b",
   "templates_version": "sha256:6fc72bdfe071"
 }

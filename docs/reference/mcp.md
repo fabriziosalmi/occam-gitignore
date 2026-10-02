@@ -4,7 +4,7 @@ See also [Guide → MCP server](../guide/mcp).
 
 The MCP adapter exposes three tools, all of which delegate to
 `occam_gitignore_core.generate(...)` (or its fingerprint helper). They are
-pure projections of the core — no LLM is involved on the server side.
+pure projections of the core; no LLM is involved on the server side.
 
 ## `occam_gitignore.generate`
 

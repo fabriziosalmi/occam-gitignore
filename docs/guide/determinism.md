@@ -21,11 +21,11 @@ Python interpreters of the same major version.
 
 Located in `packages/occam-gitignore-core/tests/test_determinism.py`:
 
-- `test_generate_is_byte_identical_across_runs` — call `generate(...)` twice
+- `test_generate_is_byte_identical_across_runs`: call `generate(...)` twice
   with the same arguments; assert `out.content` and `out.output_hash` match.
-- `test_generate_is_invariant_to_input_order` — shuffle the tree and the
+- `test_generate_is_invariant_to_input_order`: shuffle the tree and the
   user extras; assert the output is byte-identical.
-- `test_output_carries_versions` — both `core_version` and
+- `test_output_carries_versions`: both `core_version` and
   `rules_table_version` are non-empty and present in the result.
 
 ### 2. Snapshots
@@ -39,7 +39,7 @@ project shapes (Python, Node+TS, Python+Docker, Java, Rust). The test:
 3. Asserts the `sha256` of `content` matches a hash hard-coded in the test.
 4. Asserts `out.output_hash` matches that hash.
 
-If any of those four checks fails, the change is intentional — and the
+If any of those four checks fails, the change is intentional, and the
 snapshot **and** hash must be updated together.
 
 ### 3. Benchmark stability
@@ -50,7 +50,7 @@ Run with `--repeats N`. Each case is generated `N` times. The bench computes:
 stability = (#cases whose hash is identical across all N runs) / (#cases)
 ```
 
-A regression to `< 1.0` is a release blocker — the CI workflow exits with
+A regression to `< 1.0` is a release blocker: the CI workflow exits with
 code `1` in that case (see `_exit_code` in
 `occam_gitignore_bench.__main__`).
 

@@ -4,7 +4,7 @@ Pure, deterministic core for [`occam-gitignore`](https://pypi.org/project/occam-
 
 This package contains only the algorithm: types, ports, fingerprinter,
 generator. No I/O wrappers, no CLI, no network. The public-facing tool that
-end users want is [`occam-gitignore`](https://pypi.org/project/occam-gitignore/) —
+end users want is [`occam-gitignore`](https://pypi.org/project/occam-gitignore/):
 install that one with `pipx install occam-gitignore`.
 
 This package is published separately so that other tools (IDE extensions,

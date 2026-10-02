@@ -20,7 +20,7 @@ features:
   - title: Deterministic by contract
     details: Every output carries a sha256 hash, a core version, and a rules-table version. Two runs on the same tree produce byte-identical output, enforced by tests.
   - title: Hexagonal architecture
-    details: The core is a pure function of (fingerprint, options, templates, rules). All I/O lives in adapters — CLI, HTTP, MCP — sharing the same generator.
+    details: The core is a pure function of (fingerprint, options, templates, rules). All I/O lives in adapters (CLI, HTTP, MCP) sharing the same generator.
   - title: Explainable output
     details: Every rule carries provenance (template, mined, or user). Mined rules come from a documented, lift-based association pipeline.
   - title: Low latency

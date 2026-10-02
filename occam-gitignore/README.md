@@ -11,11 +11,11 @@
 
 `occam-gitignore` produces `.gitignore` files that are:
 
-- **Deterministic** — same input ⇒ byte-identical output, content-addressed by `sha256`.
-- **Pure** — the core has no I/O, no clock, no randomness, no dependencies.
-- **Explainable** — every emitted rule carries provenance (template / mined / user).
-- **Fast** — p99 < 200 µs end-to-end on the bench corpus.
-- **Honest** — measured on a corpus with hard recall/precision/F1/stability gates.
+- **Deterministic**: same input ⇒ byte-identical output, content-addressed by `sha256`.
+- **Pure**: the core has no I/O, no clock, no randomness, no dependencies.
+- **Explainable**: every emitted rule carries provenance (template / mined / user).
+- **Fast**: p99 < 200 µs end-to-end on the bench corpus.
+- **Honest**: measured on a corpus with hard recall/precision/F1/stability gates.
 
 ## Architecture
 
@@ -67,7 +67,7 @@ uv run occam-gitignore-bench run bench/corpus \
 | Adapter | Entry point | Purpose |
 |---|---|---|
 | CLI    | `occam-gitignore generate <path>`     | Local generation |
-| Action | `uses: fabriziosalmi/gitignore@v0.1.3`| CI drift check / auto-fix |
+| Action | `uses: fabriziosalmi/occam-gitignore@v0.4.0`| CI drift check / auto-fix |
 | API    | `uvicorn occam_gitignore_api.app:app` | HTTP, hash in `ETag` |
 | MCP    | `occam-gitignore-mcp`                 | LLM-callable tool surface |
 | Bench  | `occam-gitignore-bench run`           | Quality + latency gates |
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: fabriziosalmi/gitignore@v0.1.3
+      - uses: fabriziosalmi/occam-gitignore@v0.4.0
         with:
           path: '.'
           mode: 'check'   # or 'fix' to merge the managed block (own lines are kept)
@@ -91,7 +91,7 @@ jobs:
 
 Inputs: `path` (default `.`), `mode` (`check`|`fix`, default `check`),
 `python-version` (default `3.12`), `version` (PEP 440 specifier, default
-`>=0.1.3,<0.2`). Outputs: `drift` (`true`|`false`), `output-hash`
+`>=0.4.0,<0.5`). Outputs: `drift` (`true`|`false`), `output-hash`
 (`sha256:<digest>`).
 
 ## Documentation
