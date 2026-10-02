@@ -96,14 +96,24 @@ def test_apply_appends_block_to_empty_file() -> None:
     assert MANAGED_BLOCK_START in result
 
 
-def test_apply_preserves_lines_before_the_block() -> None:
+def test_apply_puts_block_first_and_keeps_own_lines_after_it() -> None:
     existing = "# my rules\nsecrets.txt\n/cache/\n"
     result = apply_managed_block(existing, "rule-a\n")
-    assert "# my rules" in result
-    assert "secrets.txt" in result
-    assert "/cache/" in result
-    # Custom content comes before the managed block.
-    assert result.index("secrets.txt") < result.index(MANAGED_BLOCK_START)
+    assert result.startswith(MANAGED_BLOCK_START)
+    # Own lines follow the block, unchanged and in order, so they win in git.
+    assert result.endswith(f"{MANAGED_BLOCK_END}\n\n# my rules\nsecrets.txt\n/cache/\n")
+
+
+def test_apply_moves_an_existing_block_to_the_top() -> None:
+    existing = (
+        f"top-line\n\n{MANAGED_BLOCK_START}\n{MANAGED_BLOCK_NOTICE}\n"
+        f"OLD\n{MANAGED_BLOCK_END}\n\nbottom-line\n"
+    )
+    result = apply_managed_block(existing, "rule-a\n")
+    assert result == (
+        f"{MANAGED_BLOCK_START}\n{MANAGED_BLOCK_NOTICE}\nrule-a\n{MANAGED_BLOCK_END}\n"
+        "\ntop-line\n\nbottom-line\n"
+    )
 
 
 def test_apply_preserves_lines_after_the_block() -> None:
@@ -158,8 +168,8 @@ def test_apply_result_ends_with_single_newline() -> None:
 
 
 def test_apply_single_blank_line_separates_block_from_content() -> None:
-    result = apply_managed_block("foo\n", "rule-a\n")
-    assert f"foo\n\n{MANAGED_BLOCK_START}" in result
+    result = apply_managed_block("\n\nfoo\n", "rule-a\n")
+    assert result.endswith(f"{MANAGED_BLOCK_END}\n\nfoo\n")
 
 
 def test_apply_raises_on_start_without_end() -> None:

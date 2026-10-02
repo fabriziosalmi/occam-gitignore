@@ -7,16 +7,18 @@ See also [Guide → CLI](../guide/cli) for tutorial-style usage.
 ```
 Usage: occam-gitignore generate [OPTIONS] PATH
 
-  Generate a deterministic .gitignore for the project at PATH.
+  Generate a deterministic .gitignore for the given repository.
+
+  Prints to stdout. To update a repository, prefer `apply`: it keeps every
+  hand-written line. `--write` replaces the whole file, so it refuses to
+  clobber an existing, different `.gitignore` unless `--force` is given.
 
 Options:
-  --templates DIR        Templates directory  [default: data/templates]
-  --rules-table FILE     Rules table JSON     [default: data/rules_table.json]
-  --no-comments          Suppress header and section comments
-  --provenance           Append # <feature> to each rule
-  --extra TEXT           User pattern (repeatable)
-  --stdout               Print to stdout instead of writing a file
-  --help                 Show this message and exit
+  --extra, -e TEXT   Extra pattern (repeatable)
+  --write            Write to PATH/.gitignore
+  --force            With --write, replace an existing, different .gitignore
+  --explain          Append # <feature> to each rule
+  --help             Show this message and exit
 ```
 
 ## `occam-gitignore inspect`
@@ -47,14 +49,29 @@ Usage: occam-gitignore check [PATH]
 ```
 Usage: occam-gitignore apply [OPTIONS] [PATH]
 
-  Merge the canonical output into a delimited "managed block" in
-  PATH/.gitignore. Lines outside the block are preserved (merge, not replace);
-  an existing block is replaced in place; if absent, the block is appended.
-  Idempotent and deterministic.
+  Merge the canonical output into a delimited "managed block" at the top of
+  PATH/.gitignore. Lines outside the block are preserved (merge, not replace)
+  and kept below it, so they override it (git: last matching pattern wins).
+  An existing block is replaced and moved to the top. Idempotent and
+  deterministic.
 
 Options:
   --extra, -e TEXT   User pattern (repeatable)
   --explain          Append # <feature> to each rule
+```
+
+## `occam-gitignore audit`
+
+```
+Usage: occam-gitignore audit [PATH]
+
+  List tracked files that PATH/.gitignore would ignore after `apply`, one
+  per line: `secret|tracked <TAB> path <TAB> rule`. Likely credentials come
+  first. Files are never opened; git's own matcher decides.
+
+  Exit 0  — no tracked file is matched.
+  Exit 1  — at least one is; the list is on stdout.
+  Exit 2  — PATH is not inside a git work tree, or the managed block is malformed.
 ```
 
 ## `occam-gitignore version`

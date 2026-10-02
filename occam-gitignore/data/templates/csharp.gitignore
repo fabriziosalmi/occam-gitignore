@@ -21,4 +21,3 @@ x86/
 *.nupkg
 *.snupkg
 TestResult*.xml
-.vscode/

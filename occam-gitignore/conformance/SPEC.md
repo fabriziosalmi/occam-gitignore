@@ -31,10 +31,13 @@ A conformant implementation accepts:
 
 ## 2. Fingerprint
 
-A fingerprint is computed by 11 explicit detectors plus an implicit
+A fingerprint is computed by 12 explicit detectors plus an implicit
 `common` feature. A path matches a detector iff a fixed predicate
 (see [`fingerprint.py`](../packages/occam-gitignore-core/src/occam_gitignore_core/fingerprint.py))
-returns true.
+returns true. `node` and `ruby` match only manifests or lockfiles
+(`package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`,
+`bun.lock`, `bun.lockb`; `Gemfile`, `Gemfile.lock`, `*.gemspec`), never a
+bare source extension.
 
 For each detected feature, the witness path emitted is the
 **lexicographically smallest** matching path. This makes the evidence

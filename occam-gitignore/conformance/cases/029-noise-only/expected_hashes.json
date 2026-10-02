@@ -1,8 +1,8 @@
 {
-  "content_hash": "sha256:d97e290e014882d63f2f47ff254b4e43c5a96db5f75a22f402a4d5e12103be28",
+  "content_hash": "sha256:813d5d11ba0ce24c7d206f2290b2b3b51a64d620631469531ecef83617fe30e8",
   "core_version": "0.3.0",
   "features": [],
-  "provenance_hash": "sha256:648eeb4cd6b65721915195b62cbd95552bd812c180bb5d074e2995384decad9f",
+  "provenance_hash": "sha256:6451350d6c34d75cc07922ff48d1c094c4646f5757f2d0e8c7c62775d07fedd1",
   "rules_table_version": "sha256:4f53cda18c2b",
-  "templates_version": "sha256:fac86df08594"
+  "templates_version": "sha256:6fc72bdfe071"
 }

@@ -8,8 +8,8 @@ Two pure operations power the CLI's drift-guard and merge workflows:
   Extra, project-specific lines are ignored: this is a subset/coverage test,
   not an equality test.
 * :func:`apply_managed_block` — the *merge* behind ``occam-gitignore apply``.
-  Insert or replace a single delimited block, leaving every line outside the
-  block untouched.
+  Keep a single delimited block at the top of the file, leaving every line
+  outside the block untouched (and, being later, in charge).
 
 Both are pure functions of their arguments: deterministic, no I/O, no clock,
 no randomness. The same inputs always yield the same output.
@@ -85,17 +85,21 @@ def build_managed_block(body: str) -> str:
 
 
 def apply_managed_block(existing: str, body: str) -> str:
-    """Insert or replace the occam-gitignore managed block in ``existing``.
+    """Place the occam-gitignore managed block at the top of ``existing``.
 
-    - Lines outside the block are preserved (merge, not replace).
-    - If the block is already present, its content is replaced in place.
-    - If absent, the block is appended after the existing content.
+    - Lines outside the block are preserved, in their original order
+      (merge, not replace).
+    - The block always sits **first**; an existing block is moved there.
+      git resolves ignore status by "last matching pattern wins", so every
+      hand-written line, coming after the block, overrides it. A canonical
+      re-include such as ``!.env.example`` can never undo a project's own
+      decision to ignore that file.
     - **Idempotent**: ``apply_managed_block(apply_managed_block(x, b), b) ==
       apply_managed_block(x, b)``.
     - **Deterministic**: a pure function of ``(existing, body)``.
 
     The result always ends with exactly one trailing newline, with a single
-    blank line separating the block from any surrounding content.
+    blank line separating the block from the project's own lines.
 
     Raises
     ------
@@ -117,16 +121,17 @@ def apply_managed_block(existing: str, body: str) -> str:
             raise ManagedBlockError("start marker found without an end marker")
         before, after = src[:start], src[end + 1 :]
 
-    before = _rstrip_blank(before)
+    before = _lstrip_blank(_rstrip_blank(before))
     after = _rstrip_blank(_lstrip_blank(after))
+    own: list[str] = list(before)
+    if before and after:
+        own.append("")
+    own.extend(after)
 
-    parts: list[str] = list(before)
-    if before:
+    parts: list[str] = list(block_lines)
+    if own:
         parts.append("")
-    parts.extend(block_lines)
-    if after:
-        parts.append("")
-        parts.extend(after)
+        parts.extend(own)
     return "\n".join(parts) + "\n"
 
 

@@ -7,6 +7,7 @@ import argparse
 import json
 import statistics
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -19,6 +20,7 @@ from occam_gitignore_core import (
     generate,
 )
 
+from . import realworld
 from .cases import load_cases
 from .metrics import CaseResult, ReportSummary, evaluate, summarize
 
@@ -71,12 +73,57 @@ def main(argv: list[str] | None = None) -> int:
     perf.add_argument("--max-generate-p99-ms", type=float, default=0.5)
     perf.add_argument("--json", action="store_true")
 
+    rw = sub.add_parser(
+        "realworld",
+        help="Read-only dry run of `apply` against real git repositories.",
+    )
+    rw.add_argument("base", type=Path, help="Directory whose children are git repos.")
+    rw.add_argument("--templates", type=Path, required=True)
+    rw.add_argument("--rules-table", type=Path, required=True)
+    rw.add_argument(
+        "--repo", action="append", default=[],
+        help="Only these repo names (repeatable). Default: every git repo in BASE.",
+    )
+    rw.add_argument(
+        "--accepted", type=Path, default=None,
+        help="File of accepted collateral, one `repo:path` per line. Keep it outside the repo.",
+    )
+    rw.add_argument(
+        "--scratch", type=Path, default=None,
+        help="Where to build mirrors. Default: a temporary directory.",
+    )
+    rw.add_argument("--out", type=Path, default=None, help="Write the full JSON report here.")
+    rw.add_argument("--workers", type=int, default=8)
+
     args = parser.parse_args(argv)
     if args.cmd == "run":
         return _cmd_run(args)
     if args.cmd == "perf":
         return _cmd_perf(args)
+    if args.cmd == "realworld":
+        return _cmd_realworld(args)
     return 2  # unreachable
+
+
+def _cmd_realworld(args: argparse.Namespace) -> int:
+    repos = realworld.discover_repos(args.base)
+    if args.repo:
+        wanted = set(args.repo)
+        repos = tuple(r for r in repos if r.name in wanted)
+        missing = wanted - {r.name for r in repos}
+        if missing:
+            sys.stderr.write(f"not git repos under {args.base}: {sorted(missing)}\n")
+            return 2
+    accepted = realworld.load_accepted(args.accepted)
+    with tempfile.TemporaryDirectory() as tmp:
+        scratch = args.scratch if args.scratch is not None else Path(tmp)
+        reports = realworld.run_fleet(
+            repos, args.templates, args.rules_table, scratch, workers=args.workers,
+        )
+    if args.out is not None:
+        args.out.write_text(realworld.to_json(reports), "utf-8")
+    sys.stdout.write(realworld.to_text(reports, accepted))
+    return realworld.gate(reports, accepted)
 
 
 def _cmd_run(args: argparse.Namespace) -> int:

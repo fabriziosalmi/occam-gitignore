@@ -1,11 +1,11 @@
 {
-  "content_hash": "sha256:13b84c24feae190a2cb7b957a5104edbe26d49877073c8fcaf6bc08545e20b98",
+  "content_hash": "sha256:0db6ad2f2f53add2402c76fff136006c9228d867778fc8e27385ae7c457c4593",
   "core_version": "0.3.0",
   "features": [
     "common",
     "java"
   ],
-  "provenance_hash": "sha256:47798f5149394ceea3c9620e063f0c4fa903c48a52102c7800170203ab78f321",
+  "provenance_hash": "sha256:1c8ed665aea1a1e8b785381611053995e0e9b03ad60d1f299236791495b1a8dd",
   "rules_table_version": "sha256:4f53cda18c2b",
-  "templates_version": "sha256:fac86df08594"
+  "templates_version": "sha256:6fc72bdfe071"
 }

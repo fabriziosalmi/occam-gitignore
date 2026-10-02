@@ -4,6 +4,67 @@ All notable changes to `occam-gitignore` are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+Driven by read-only dry runs of `apply` against real repositories (see
+`occam-gitignore-bench realworld`), which showed rules un-ignoring files the
+project ignored, stacks detected from ignored paths, and canonical rules
+matching files projects deliberately track.
+
+### Security
+- **`apply` puts the managed block at the top of `.gitignore`** (moving an
+  existing block there). git applies the last matching pattern, so the
+  project's own lines now always override the canonical ones: a re-include
+  such as `!.env.example` can no longer un-ignore a file the project chose
+  to ignore.
+- **`generate --write` refuses to replace an existing, different
+  `.gitignore`** unless `--force` is given. Replacing the file drops every
+  project-specific rule. The README no longer recommends
+  `generate > .gitignore`; `apply` is the documented way to update a
+  repository.
+
+### Added
+- **`occam-gitignore audit [PATH]`** lists tracked files that `.gitignore`
+  would ignore after `apply`, labelling likely credentials (`.env`, `*.key`,
+  `*.pem`, …) first. A `.gitignore` never untracks a file, so these are
+  either rules that do not fit the project or files that should never have
+  been committed (untrack with `git rm --cached` and rotate). Files are
+  never opened. `apply` prints the same count as a warning.
+- **`occam-gitignore-bench realworld BASE`** dry-runs `apply` against every
+  git repository under `BASE`, without writing to them. git's own matcher
+  judges each path before and after on a mirror of the repository's ignore
+  files; the mirror is checked against git's real view. Gates: re-exposed
+  paths (exit 6), stacks detected only from ignored paths (7), tracked files
+  newly ignored and not listed in `--accepted` (8), mirror divergence (9).
+
+### Changed
+- **The scanner asks git**: inside a work tree, the project is the tracked
+  files plus untracked files that are not ignored. Virtualenvs with any
+  name, agent worktrees and build output can no longer pass for project
+  evidence. Outside git, the filesystem walk is unchanged. Truncation at
+  `max_entries` now happens after sorting, so it no longer depends on
+  filesystem order.
+- **`node` and `ruby` need a manifest or lockfile** (`package.json`,
+  `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock[b]`;
+  `Gemfile`, `Gemfile.lock`, `*.gemspec`). A docs site's `.js`, a Homebrew
+  formula's `.rb` or a vendored `Rakefile` no longer pull in templates that
+  ignore `dist/`, `tmp/` or `.config`.
+- Templates:
+  - `rust`: no longer ignores `Cargo.lock` (Cargo's guidance is to commit it).
+  - `swift`: no longer ignores `*.xcodeproj/` (the Xcode project itself) or
+    `Package.resolved`.
+  - `go`: no longer ignores `vendor/`; vendoring is a deliberate choice, and
+    when made, `vendor/` is committed.
+  - `node`: no longer ignores `logs/` or `out/` (`*.log` stays).
+  - `common`: `.vscode/` became `.vscode/*` with the shared files re-included
+    (`settings.json`, `tasks.json`, `launch.json`, `extensions.json`,
+    `*.code-snippets`); `csharp` drops its own `.vscode/`, which would block
+    those re-includes. `.env.*.example`, `.env.sample` and `.env.template`
+    are re-included next to `.env.example`.
+- The template version changes, so every output hash changes; snapshots, the
+  conformance suite and the bench corpus are regenerated for exactly these
+  rule changes.
+
 ## [0.3.0] — 2026-07-19
 
 ### Added

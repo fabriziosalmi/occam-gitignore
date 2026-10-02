@@ -23,6 +23,7 @@ from occam_gitignore_core import (
     missing_patterns,
 )
 
+from .audit import Finding, tracked_ignored
 from .paths import data_root, rules_table_path, templates_root
 from .scanner import scan_tree
 
@@ -79,9 +80,17 @@ def generate_(
     path: Path = typer.Argument(..., exists=True, file_okay=False),
     extras: list[str] = typer.Option([], "--extra", "-e", help="Extra patterns."),
     write: bool = typer.Option(False, "--write", help="Write to <path>/.gitignore."),
+    force: bool = typer.Option(
+        False, "--force", help="With --write, replace an existing, different .gitignore.",
+    ),
     explain: bool = typer.Option(False, "--explain", help="Annotate provenance."),
 ) -> None:
-    """Generate a deterministic .gitignore for the given repository."""
+    """Generate a deterministic .gitignore for the given repository.
+
+    Prints to stdout. To update a repository, prefer `apply`: it keeps every
+    hand-written line. `--write` replaces the whole file, so it refuses to
+    clobber an existing, different `.gitignore` unless `--force` is given.
+    """
     fingerprinter, templates, rules = _build_pipeline()
     fp = fingerprinter.fingerprint(scan_tree(path))
     output = generate(
@@ -92,6 +101,17 @@ def generate_(
     )
     if write:
         target = path / ".gitignore"
+        if (
+            not force
+            and target.is_file()
+            and target.read_text("utf-8") != output.content
+        ):
+            typer.echo(
+                f"error: {target} exists and differs; replacing it would drop its own "
+                "rules. Use `occam-gitignore apply` to merge, or --force to replace.",
+                err=True,
+            )
+            raise typer.Exit(2)
         _atomic_write_text(target, output.content)
         typer.echo(
             f"wrote {target} content={output.content_hash} "
@@ -197,6 +217,63 @@ def apply(
         f"provenance={output.provenance_hash}",
         err=True,
     )
+    findings = tracked_ignored(path, merged)
+    if findings:
+        typer.echo(f"warning: {_summary(findings)}", err=True)
+        typer.echo("run `occam-gitignore audit` for the list", err=True)
+
+
+@app.command()
+def audit(
+    path: Path = typer.Argument(Path(), exists=True, file_okay=False),
+) -> None:
+    """List tracked files that `.gitignore` would ignore after `apply`.
+
+    A `.gitignore` never untracks a file: a committed key stays in the
+    history, and new files like a matched one are silently skipped by
+    `git add`. Prints `secret|tracked <TAB> path <TAB> rule` per file and exits
+    1 if there is any, 0 if none, 2 if PATH is not in a git work tree. Files
+    are never opened; only their paths are matched, by git itself.
+    """
+    fingerprinter, templates, rules = _build_pipeline()
+    output = generate(
+        fingerprinter.fingerprint(scan_tree(path)),
+        GenerateOptions(),
+        templates=templates,
+        rules_table=rules,
+    )
+    target = path / ".gitignore"
+    existing = target.read_text("utf-8") if target.is_file() else ""
+    try:
+        merged = apply_managed_block(existing, output.content)
+    except ManagedBlockError as exc:
+        typer.echo(f"error: {target}: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    findings = tracked_ignored(path, merged)
+    if findings is None:
+        typer.echo(f"error: {path} is not inside a git work tree", err=True)
+        raise typer.Exit(2)
+    if not findings:
+        typer.echo("ok: no tracked file is matched by an ignore rule", err=True)
+        return
+    for f in findings:
+        typer.echo(f"{'secret' if f.secret else 'tracked'}\t{f.path}\t{f.pattern}")
+    typer.echo(_summary(findings), err=True)
+    raise typer.Exit(1)
+
+
+def _summary(findings: tuple[Finding, ...]) -> str:
+    secrets = sum(1 for f in findings if f.secret)
+    text = (
+        f"{len(findings)} tracked file(s) match ignore rules: they stay tracked, "
+        "but new files like them will be skipped by `git add`."
+    )
+    if secrets:
+        text += (
+            f" {secrets} look like credentials already in the history: untrack them "
+            "with `git rm --cached` and rotate them."
+        )
+    return text
 
 
 @app.command()

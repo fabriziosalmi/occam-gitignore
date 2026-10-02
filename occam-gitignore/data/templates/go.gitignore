@@ -14,6 +14,3 @@ coverage.txt
 # Go workspace
 go.work
 go.work.sum
-
-# Dependency vendoring (opt-in)
-vendor/

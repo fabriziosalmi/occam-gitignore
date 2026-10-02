@@ -7,7 +7,8 @@ implementation of the algorithm.
 
 ```bash
 pipx install occam-gitignore
-occam-gitignore generate /path/to/repo > .gitignore
+occam-gitignore apply /path/to/repo      # merge into .gitignore, keeping your own lines
+occam-gitignore generate /path/to/repo   # preview the canonical output on stdout
 ```
 
 ## Why deterministic?

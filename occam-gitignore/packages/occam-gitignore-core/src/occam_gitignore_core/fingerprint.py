@@ -42,11 +42,18 @@ _DETECTORS: Final[tuple[Detector, ...]] = (
             or _ext(".py")(p)
         ),
     ),
+    # Node and Ruby require a manifest. A stray `.js` (docs site, vendored
+    # asset) or a Homebrew formula `.rb` is not a project of that ecosystem,
+    # and their templates ignore generic names (`dist/`, `build/`, `tmp/`,
+    # `.config`) that such repositories legitimately track.
     Detector(
         Feature("node"),
-        lambda p: (
-            _is_or_endswith("package.json")(p)
-            or _ext(".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx")(p)
+        lambda p: any(
+            _is_or_endswith(m)(p)
+            for m in (
+                "package.json", "package-lock.json", "yarn.lock",
+                "pnpm-lock.yaml", "bun.lock", "bun.lockb",
+            )
         ),
     ),
     Detector(
@@ -82,8 +89,8 @@ _DETECTORS: Final[tuple[Detector, ...]] = (
         Feature("ruby"),
         lambda p: (
             _is_or_endswith("Gemfile")(p)
-            or _is_or_endswith("Rakefile")(p)
-            or _ext(".rb", ".gemspec")(p)
+            or _is_or_endswith("Gemfile.lock")(p)
+            or _ext(".gemspec")(p)
         ),
     ),
     Detector(

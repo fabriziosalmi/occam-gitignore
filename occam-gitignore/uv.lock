@@ -656,11 +656,15 @@ name = "occam-gitignore-bench"
 version = "0.1.0"
 source = { editable = "packages/occam-gitignore-bench" }
 dependencies = [
+    { name = "occam-gitignore" },
     { name = "occam-gitignore-core" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "occam-gitignore-core", editable = "packages/occam-gitignore-core" }]
+requires-dist = [
+    { name = "occam-gitignore", editable = "packages/occam-gitignore-cli" },
+    { name = "occam-gitignore-core", editable = "packages/occam-gitignore-core" },
+]
 
 [[package]]
 name = "occam-gitignore-core"

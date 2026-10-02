@@ -6,6 +6,8 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
   "occam-gitignore-core",
+  # `realworld` drives the real CLI scanner, not a re-implementation of it.
+  "occam-gitignore",
 ]
 
 [project.scripts]
